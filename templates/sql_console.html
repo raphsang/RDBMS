@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}SQL Console - Simple RDBMS Demo{% endblock %}
+
+{% block extra_css %}
+<style>
+    .sql-editor {
+        width: 100%;
+        min-height: 150px;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        padding: 15px;
+        border: 2px solid #dee2e6;
+        border-radius: 6px;
+        background: #f8f9fa;
+    }
+    
+    .sql-editor:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+    }
+    
+    .example-queries {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 6px;
+        margin-top: 20px;
+    }
+    
+    .example-query {
+        background: white;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 4px;
+        font-family: 'Courier New', monospace;
+        font-size: 13px;
+        cursor: pointer;
+        border: 1px solid #dee2e6;
+        transition: all 0.3s;
+    }
+    
+    .example-query:hover {
+        border-color: #667eea;
+        transform: translateX(5px);
+    }
+    
+    #result-container {
+        margin-top: 20px;
+    }
+    
+    .result-table {
+        overflow-x: auto;
+    }
+    
+    .error-message {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid #f5c6cb;
+    }
+    
+    .success-message {
+        background: #d4edda;
+        color: #155724;
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid #c3e6cb;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>💻 SQL Console</h2>
+    <p style="color: #6c757d; margin-bottom: 20px;">
+        Execute SQL queries directly against the database. Try SELECT, INSERT, UPDATE, or DELETE statements.
+    </p>
+    
+    <form id="sql-form">
+        <div class="form-group">
+            <label for="sql-input">SQL Query:</label>
+            <textarea id="sql-input" name="sql" class="sql-editor" placeholder="Enter your SQL query here..."></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Execute Query</button>
+        <button type="button" class="btn btn-secondary" onclick="clearResults()">Clear Results</button>
+    </form>
+    
+    <div id="result-container"></div>
+    
+    <div class="example-queries">
+        <h3 style="margin-bottom: 15px; font-size: 1.2em;">📚 Example Queries (Click to use):</h3>
+        
+        <div class="example-query" onclick="setQuery(this.textContent)">
+            SELECT * FROM users
+        </div>
+        
+        <div class="example-query" onclick="setQuery(this.textContent)">
+            SELECT * FROM tasks WHERE completed = 0
+        </div>
+        
+        <div class="example-query" onclick="setQuery(this.textContent)">
+            SELECT users.username, tasks.title FROM users INNER JOIN tasks ON users.id = tasks.user_id
+        </div>
+        
+        <div class="example-query" onclick="setQuery(this.textContent)">
+            SELECT users.username, COUNT(*) as task_count FROM users INNER JOIN tasks ON users.id = tasks.user_id
+        </div>
+        
+        <div class="example-query" onclick="setQuery(this.textContent)">
+            INSERT INTO users (id, username, email, created_at) VALUES (99, 'testuser', 'test@example.com', '2024-01-01')
+        </div>
+        
+        <div class="example-query" onclick="setQuery(this.textContent)">
+            UPDATE tasks SET completed = 1 WHERE id = 1
+        </div>
+        
+        <div class="example-query" onclick="setQuery(this.textContent)">
+            CREATE INDEX idx_task_completed ON tasks (completed)
+        </div>
+        
+        <div class="example-query" onclick="setQuery(this.textContent)">
+            SHOW TABLES
+        </div>
+        
+        <div class="example-query" onclick="setQuery(this.textContent)">
+            DESCRIBE tasks
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function setQuery(query) {
+        document.getElementById('sql-input').value = query.trim();
+        document.getElementById('sql-input').focus();
+    }
+    
+    function clearResults() {
+        document.getElementById('result-container').innerHTML = '';
+    }
+    
+    document.getElementById('sql-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const sql = document.getElementById('sql-input').value;
+        const resultContainer = document.getElementById('result-container');
+        
+        if (!sql.trim()) {
+            resultContainer.innerHTML = '<div class="error-message">Please enter a SQL query</div>';
+            return;
+        }
+        
+        // Show loading
+        resultContainer.innerHTML = '<div class="success-message">Executing query...</div>';
+        
+        // Send request
+        fetch('/sql/execute', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'sql=' + encodeURIComponent(sql)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                if (data.type === 'table') {
+                    // Display table results
+                    resultContainer.innerHTML = formatTableResults(data.data);
+                } else {
+                    // Display message
+                    resultContainer.innerHTML = '<div class="success-message">' + data.message + '</div>';
+                }
+            } else {
+                resultContainer.innerHTML = '<div class="error-message">Error: ' + data.error + '</div>';
+            }
+        })
+        .catch(error => {
+            resultContainer.innerHTML = '<div class="error-message">Network error: ' + error + '</div>';
+        });
+    });
+    
+    function formatTableResults(data) {
+        if (!data || data.length === 0) {
+            return '<div class="success-message">Query executed successfully. 0 rows returned.</div>';
+        }
+        
+        // Get columns from first row
+        const columns = Object.keys(data[0]);
+        
+        let html = '<div class="result-table"><table><thead><tr>';
+        
+        // Headers
+        columns.forEach(col => {
+            html += '<th>' + col + '</th>';
+        });
+        html += '</tr></thead><tbody>';
+        
+        // Rows
+        data.forEach(row => {
+            html += '<tr>';
+            columns.forEach(col => {
+                const value = row[col];
+                html += '<td>' + (value !== null && value !== undefined ? value : '-') + '</td>';
+            });
+            html += '</tr>';
+        });
+        
+        html += '</tbody></table></div>';
+        html += '<div class="success-message" style="margin-top: 10px;">' + data.length + ' row(s) returned</div>';
+        
+        return html;
+    }
+</script>
+{% endblock %}

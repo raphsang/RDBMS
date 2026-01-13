@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Statistics - Simple RDBMS Demo{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📊 Database Statistics</h2>
+    
+    {% if stats.tables %}
+        {% for table in stats.tables %}
+            <div class="card" style="background: #f8f9fa; margin-top: 20px;">
+                <h3 style="color: #667eea; font-size: 1.3em;">Table: {{ table.name }}</h3>
+                
+                <div style="margin-top: 15px;">
+                    <p><strong>Row Count:</strong> {{ table.row_count }}</p>
+                    <p><strong>Primary Key:</strong> {{ table.primary_key or 'None' }}</p>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <h4>Columns:</h4>
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        {% for column in table.columns %}
+                            <li style="font-family: 'Courier New', monospace; color: #555;">{{ column }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                {% if table.indexes %}
+                    <div style="margin-top: 15px;">
+                        <h4>Indexes:</h4>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            {% for index in table.indexes %}
+                                <li style="color: #28a745; font-weight: bold;">{{ index }}</li>
+                            {% endfor %}
+                        </ul>
+                        <p style="color: #6c757d; font-size: 0.9em; margin-top: 5px;">
+                            ℹ️ Indexes improve query performance for WHERE clauses and JOINs
+                        </p>
+                    </div>
+                {% else %}
+                    <div style="margin-top: 15px;">
+                        <p style="color: #6c757d;">No indexes defined</p>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p style="text-align: center; color: #6c757d; margin-top: 20px;">
+            No tables found in database.
+        </p>
+    {% endif %}
+</div>
+
+<div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <h2>🔧 RDBMS Features</h2>
+    <div style="margin-top: 20px;">
+        <h3 style="font-size: 1.2em; margin-bottom: 10px;">✅ Implemented Features:</h3>
+        <ul style="margin-left: 20px; line-height: 1.8;">
+            <li><strong>Data Types:</strong> INTEGER, TEXT, FLOAT, BOOLEAN</li>
+            <li><strong>Constraints:</strong> PRIMARY KEY, UNIQUE, NOT NULL</li>
+            <li><strong>CRUD Operations:</strong> INSERT, SELECT, UPDATE, DELETE</li>
+            <li><strong>Indexing:</strong> B-tree-like index structure for faster lookups</li>
+            <li><strong>Joins:</strong> INNER JOIN support</li>
+            <li><strong>SQL Interface:</strong> SQL-like query language</li>
+            <li><strong>Persistence:</strong> Database saved to disk using pickle</li>
+            <li><strong>REPL Mode:</strong> Interactive command-line interface</li>
+            <li><strong>WHERE Clauses:</strong> Filtering with comparison operators</li>
+        </ul>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <h3 style="font-size: 1.2em; margin-bottom: 10px;">🏗️ Architecture:</h3>
+        <ul style="margin-left: 20px; line-height: 1.8;">
+            <li><strong>Storage Layer:</strong> In-memory with disk persistence</li>
+            <li><strong>Index Layer:</strong> Hash-based indexes with O(1) lookups</li>
+            <li><strong>Query Parser:</strong> Regex-based SQL parser</li>
+            <li><strong>Execution Engine:</strong> Direct table operations</li>
+        </ul>
+    </div>
+</div>
+
+<div class="card">
+    <h2>🚀 Try the REPL</h2>
+    <p style="color: #6c757d; margin-bottom: 15px;">
+        You can also use the REPL (Read-Eval-Print Loop) mode by running:
+    </p>
+    <pre style="background: #f8f9fa; padding: 15px; border-radius: 6px; overflow-x: auto; font-family: 'Courier New', monospace;">python3 simple_rdbms.py</pre>
+    <p style="color: #6c757d; margin-top: 15px;">
+        This will start an interactive SQL console where you can execute queries directly.
+    </p>
+</div>
+{% endblock %}
