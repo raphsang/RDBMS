@@ -287,10 +287,3 @@ FROM users
 INNER JOIN tasks ON users.id = tasks.user_id
 WHERE tasks.completed = 0
 ```
-
-
----
-
-**Note**: This is a simplified RDBMS for educational purposes. For production use, 
-
-please use established databases like PostgreSQL, MySQL, or SQLite.
