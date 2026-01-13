@@ -2,20 +2,20 @@
 
 A lightweight, fully-functional relational database management system built from scratch in Python, with a SQL-like query interface and a web-based demonstration application.
 
-## 🎯 Project Overview
+🎯 Project Overview
 
 This project implements a simple but complete RDBMS with the following features:
-- **Custom storage engine** with in-memory operations and disk persistence
-- **SQL-like query language** for database operations
-- **Indexing system** for performance optimization
-- **Constraint enforcement** (PRIMARY KEY, UNIQUE, NOT NULL)
-- **JOIN operations** (INNER JOIN)
-- **Interactive REPL** for command-line database access
-- **Web application** demonstrating practical CRUD operations
+- Custom storage engine with in-memory operations and disk persistence
+- SQL-like query language for database operations
+- Indexing system for performance optimization
+- Constraint enforcement (PRIMARY KEY, UNIQUE, NOT NULL)
+- JOIN operations (INNER JOIN)
+- Interactive REPL for command-line database access
+- Web application demonstrating practical CRUD operations
 
-## 🏗️ Architecture
+ 🏗️ Architecture
 
-### Core Components
+ Core Components
 
 1. **Database Layer** (`Database` class)
    - Manages multiple tables
@@ -288,61 +288,9 @@ INNER JOIN tasks ON users.id = tasks.user_id
 WHERE tasks.completed = 0
 ```
 
-## ⚡ Performance Considerations
-
-- **Indexes**: Use indexes on columns frequently used in WHERE clauses and JOINs
-- **Unique Constraints**: Automatically create indexes for faster duplicate checking
-- **Primary Keys**: Always indexed for O(1) row access
-- **Memory Usage**: All data is in-memory, so database size is limited by available RAM
-- **Persistence**: Saving is synchronous and can be slow for large databases
-
-## 🔒 Limitations
-
-This is an educational implementation with intentional limitations:
-
-1. **No Transactions**: No ACID guarantees or rollback support
-2. **Simple Joins**: Only INNER JOIN, no OUTER JOIN or complex join types
-3. **No Aggregations**: No COUNT, SUM, AVG, etc. in SQL
-4. **Basic WHERE**: Limited to simple comparisons (=, >, <, etc.)
-5. **No Concurrency**: Not thread-safe, single-user only
-6. **Memory-Only**: Data must fit in available RAM
-7. **No Security**: No authentication, authorization, or SQL injection prevention
-
-## 🎯 Future Enhancements
-
-Potential improvements for learning:
-- Add transaction support with rollback
-- Implement B-tree indexes instead of hash indexes
-- Add aggregate functions (COUNT, SUM, AVG)
-- Support complex WHERE clauses with AND/OR
-- Add LEFT/RIGHT/FULL OUTER JOIN
-- Implement query optimization and explain plans
-- Add concurrency control with locks
-- Support for views and stored procedures
-
-## 📚 Learning Resources
-
-To understand the concepts used in this project:
-- **Database Systems** by Ramakrishnan and Gehrke
-- **Database Internals** by Alex Petrov
-- **SQL for Mere Mortals** by John Viescas
-- CMU Database Systems course (available online)
-
-## 🙏 Credits
-
-This project was created as an educational demonstration of RDBMS concepts. 
-The implementation is original, built from scratch to showcase database internals.
-
-## 📄 License
-
-This is educational software provided as-is for learning purposes.
-Feel free to use, modify, and learn from this code.
-
-## 🤝 Contributing
-
-This is a demonstration project, but suggestions for educational improvements are welcome!
 
 ---
 
 **Note**: This is a simplified RDBMS for educational purposes. For production use, 
+
 please use established databases like PostgreSQL, MySQL, or SQLite.
