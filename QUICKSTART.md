@@ -36,13 +36,13 @@ Full-featured task management application:
 python3 app.py
 ```
 
-Then visit: **http://127.0.0.1:5000**
+Then visit: http://127.0.0.1:5000
 
 The web app includes:
-- 📝 **Task Management** - CRUD operations with JOINs
-- 👥 **User Management** - Unique constraints in action
-- 💻 **SQL Console** - Execute queries in browser
-- 📊 **Statistics** - View database schema and indexes
+- 📝 Task Management - CRUD operations with JOINs
+- 👥 User Management - Unique constraints in action
+- 💻 SQL Console - Execute queries in browser
+- 📊 Statistics - View database schema and indexes
 
 ## 📁 Project Structure
 
@@ -197,19 +197,3 @@ Change the port in app.py:
 ```python
 app.run(debug=True, host='0.0.0.0', port=5001)  # Changed from 5000
 ```
-
-## 📚 Next Steps
-
-- Read the full [README.md](README.md) for architecture details
-- Examine [simple_rdbms.py](simple_rdbms.py) to understand implementation
-- Try building your own application on top of this RDBMS
-- Extend with new features (transactions, aggregations, etc.)
-
-## 🎉 You're Ready!
-
-Choose your starting point:
-- **Learner?** → Run `python3 demo.py`
-- **Developer?** → Read `simple_rdbms.py`
-- **User?** → Run `python3 app.py`
-
-Have fun exploring!
